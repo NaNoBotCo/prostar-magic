@@ -1,0 +1,62 @@
+{
+ "name": "Prostar Magic Shop",
+ "name_th": "โปรสตาร์ แมจิก ช้อป",
+ "performer": "Magic by Jonathan",
+ "house_no": "95/10",
+ "street_th": "ถนนคชสาร",
+ "street_en": "Kotchasarn Rd",
+ "tambon_th": "ต.ช้างคลาน",
+ "amphoe_th": "อ.เมืองเชียงใหม่ จ.เชียงใหม่ 50100",
+ "city_en": "Chiang Mai",
+ "phone": "089-756-2341",
+ "phone_intl": "+66897562341",
+ "line_id": "jonathan2512",
+ "facebook": "https://www.facebook.com/417784761568551",
+ "youtube": "https://www.youtube.com/channel/UC9Tcc1xZ62o2mZ8RpQhv8UQ",
+ "hours": [
+  [
+   "10:00",
+   "19:30"
+  ],
+  [
+   "10:00",
+   "19:30"
+  ],
+  [
+   "10:00",
+   "19:30"
+  ],
+  [
+   "10:00",
+   "19:30"
+  ],
+  [
+   "10:00",
+   "19:30"
+  ],
+  [
+   "11:00",
+   "19:00"
+  ],
+  [
+   "11:00",
+   "19:00"
+  ]
+ ],
+ "show_price": null,
+ "course_note": "คอร์สมายากลเพื่อการเรียนรู้",
+ "own_trick": "Card-102",
+ "base_url": "https://nanobotco.github.io/prostar-magic/",
+ "sources": {
+  "name_th, house_no, facebook, coordinates": "Overture Maps via motdang.net/cm/p/prostar-magic-shop-8705214589462627167.html (updated 2026-09-07)",
+  "phone, line_id, youtube, performer, course_note, catalogue": "prostar-magic.com homepage, frozen copy stamped 2024-06-18",
+  "house_no_conflict": "the shop's own map image (Magic-shop.jpg) reads เลขที่ 95/9; Overture and Google Maps read 95/10; client decision 2026-09-26: 95/10",
+  "storefront photo": "motdang.net listing photo cm-ovt-eff8705d",
+  "show banner": "prostar-magic.com private_folder/Magic_station.jpg",
+  "hours, postcode": "Google Maps listing, read 2026-09-26 (Mon–Fri 10:00–19:30, Sat–Sun 11:00–19:00)",
+  "show_price": "not on this disk"
+ },
+ "postcode": "50100",
+ "hours_checked": "2026-09-26",
+ "repo": "https://github.com/NaNoBotCo/prostar-magic"
+}
