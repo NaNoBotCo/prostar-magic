@@ -16,12 +16,14 @@ from html import escape
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import art  # noqa: E402
 import card as C  # noqa: E402
 import shopmap  # noqa: E402
 from common import ASSETS, DATA, GEO, SITE, jload  # noqa: E402
 from css import CSS  # noqa: E402
 
 TH_MONTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."]
+SUIT = {"stage": ("♣", 0), "cards": ("♠", 0), "closeup": ("♥", 1), "coins": ("♦", 1), "mind": ("✦", 1)}
 SHELVES = [("stage", "เวที", "Stage"), ("cards", "ไพ่", "Cards"), ("closeup", "ระยะใกล้", "Close-up"),
            ("coins", "เหรียญ·แบงก์", "Coins & notes"), ("mind", "ทายใจ", "Mind reading")]
 BINS = [(0, 100), (101, 250), (251, 500), (501, 1000), (1001, 2500), (2501, 10 ** 9)]
@@ -90,13 +92,15 @@ def product_card(i: int, p: dict, shelf_names: dict) -> str:
     off = round(100 * (p["was"] - p["price"]) / p["was"]) if p["was"] else 0
     was = f'<s aria-label="เดิม">{baht(p["was"])}</s><em class="off">−{off}%</em>' if p["was"] else ""
     teach = '<span class="tag">มีคลิปสอน</span>' if p["teach"] else ""
+    suit, red = SUIT[p["shelf"]]
+    pip = f'<span class="pip{" red" if red else ""}" aria-hidden="true">{suit}</span>'
     img = (f'<img src="assets/{p["img"]}" width="240" height="240" loading="lazy" decoding="async" alt="">'
            if p["img"] else '<span class="noimg" aria-hidden="true">✦</span>')
     key = f'{p["name"]} {p["code"]} {p["blurb"]} {shelf_names[p["shelf"]]}'.lower()
     return (f'<article class="p" id="p-{p["id"]}" data-id="{p["id"]}" data-i="{i}" data-p="{p["price"]}" '
             f'data-off="{off}" data-shelf="{p["shelf"]}" data-teach="{int(p["teach"])}" '
             f'data-k="{escape(key)}" data-name="{escape(p["name"])}" data-code="{escape(p["code"])}">'
-            f'<div class="p-img">{img}{teach}</div>'
+            f'{pip}<div class="p-img">{img}{teach}</div>'
             f'<div class="p-body"><h3>{escape(p["name"])}</h3>'
             f'<p class="p-blurb">{escape(p["blurb"])}</p>'
             f'<p class="p-code">{escape(p["code"])}</p>'
@@ -159,7 +163,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     own_tile = ""
     if own:
         own_tile = (f'<figure class="tile tile-shot"><a class="shot" href="#p-{own["id"]}">'
-                    f'<span class="bg" style="background-image:url(assets/{own["img"]})"></span>'
+                    f'<span class="bg">{art.burn_svg()}</span>'
                     f'<span class="scrim"></span><span class="sp"></span>'
                     f'<span class="tx"><small>กลของโจนาธานเอง · <span lang="en">Jonathan\'s own trick</span></small>'
                     f'<strong>Burn</strong><em>{baht(own["price"])}</em></span></a></figure>')
@@ -203,7 +207,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 
 <main id="top">
 <section class="band hero" aria-label="Prostar Magic Shop">
-  <span class="bg" style="background-image:url(assets/photos/storefront.jpg)"></span>
+  <span class="bg">{art.stage_svg()}</span>
   <span class="scrim"></span><span class="sp"></span>
   <div class="tx">
     <p class="kicker">{bi("ถนนคชสาร ริมคูเมือง เชียงใหม่", "Kotchasarn Road, on the moat, Chiang Mai")}</p>
@@ -255,16 +259,20 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 </section>
 
 <section id="shows" class="sec shows">
+  <div class="shows-grid">
+  <div>
   <div class="sec-h">
     <h2>{bi("โชว์มายากล", "Magic shows", "small")}</h2>
     <p class="perf" lang="en">{escape(shop['performer'])}</p>
     <p>{bi("มายากลเวทีและระยะใกล้ สำหรับงานบริษัท โรงเรียน และงานเลี้ยง", "Stage and close-up magic for company events, schools and parties.")}</p>
   </div>
-  <figure class="banner"><img src="assets/photos/shows.jpg" width="1000" height="300" loading="lazy" decoding="async"
-    alt="Jonathan performing: card magic, stage shows with an assistant, the Thailand's Got Talent set, a company event stage">
-    <figcaption>{bi("ภาพจากงานที่ผ่านมา", "From past shows")}</figcaption></figure>
   <p class="ctas"><a class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>ถามคิวและราคาทาง LINE</span><small lang="en">Ask for a date and price</small></a>
   <a class="btn btn-gold" href="{tel}"><span>โทร</span><small>{shop['phone']}</small></a></p>
+  </div>
+  <figure class="polaroid"><img src="assets/photos/shows.jpg" width="1000" height="300" loading="lazy" decoding="async"
+    alt="Jonathan performing: card magic, stage shows with an assistant, the Thailand's Got Talent set, a company event stage">
+    <figcaption>{bi("ภาพจากงานที่ผ่านมา", "From past shows")}</figcaption></figure>
+  </div>
 </section>
 
 <section id="learn" class="sec learn">
@@ -295,9 +303,6 @@ def page(shop: dict, cat: dict, g: dict) -> str:
         <p class="hours-src">{bi(f"ตาม Google Maps · {th_date(shop['hours_checked'])}", f"From Google Maps, {en_date(shop['hours_checked'])}")}</p></div>
       <p class="ctas"><a class="btn btn-gold sm" href="{osm}" target="_blank" rel="noopener"><span>เส้นทาง</span><small lang="en">OpenStreetMap</small></a>
         <a class="btn btn-ghost-dark sm" href="{gmaps}" target="_blank" rel="noopener"><span>เส้นทาง</span><small lang="en">Google Maps</small></a></p>
-      <figure class="front"><img src="assets/photos/storefront-sm.jpg" width="480" height="320" loading="lazy" decoding="async"
-        alt="The shop front: a two-storey building with the PROSTAR MAGIC SHOP sign over the door">
-        <figcaption>{bi("หน้าร้าน", "The shop front")}</figcaption></figure>
     </div>
   </div>
 </section>
@@ -385,6 +390,33 @@ def icon_svg() -> str:
             '18.4 50.9l2.9-15.3L10 25l15.4-1.9z"/></svg>')
 
 
+CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+
+def chrome_card(out: Path, count: int, lo: int, hi: int) -> bool:
+    """Photograph the drawn card page with headless Chrome (real Thai shaping, same SVG)."""
+    import subprocess
+    import tempfile
+    from PIL import Image
+    if not Path(CHROME).exists():
+        return False
+    with tempfile.TemporaryDirectory() as t:
+        page_ = Path(t) / "card.html"
+        page_.write_text(art.card_html((ASSETS / "fonts").as_uri(), count, lo, hi), encoding="utf-8")
+        png = Path(t) / "card.png"
+        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                        "--force-device-scale-factor=1", "--window-size=1200,630",
+                        "--virtual-time-budget=3000", f"--screenshot={png}", page_.as_uri()],
+                       capture_output=True, timeout=90)
+        if not png.exists():
+            return False
+        im = Image.open(png).convert("RGB")
+        if im.size != (1200, 630):
+            im = im.crop((0, 0, 1200, 630))
+        im.save(out, "JPEG", quality=88, optimize=True, progressive=True)
+    return True
+
+
 def main() -> int:
     shop = jload(DATA / "shop.json")
     cat = jload(DATA / "products.json")
@@ -398,17 +430,14 @@ def main() -> int:
     (SITE / "assets" / "photos").mkdir(parents=True)
     shutil.copytree(ASSETS / "products", SITE / "assets" / "products")
     shutil.copytree(ASSETS / "fonts", SITE / "assets" / "fonts")
-    C.hero(SITE / "assets" / "photos" / "storefront.jpg")
-    sm = C.graded_storefront()
-    sm.thumbnail((480, 480))
-    sm.save(SITE / "assets" / "photos" / "storefront-sm.jpg", "JPEG", quality=78, optimize=True, progressive=True)
     from PIL import Image
     Image.open(DATA / "snapshot" / "Magic_station.jpg").convert("RGB").save(
         SITE / "assets" / "photos" / "shows.jpg", "JPEG", quality=78, optimize=True, progressive=True)
     (SITE / "assets" / "icon.svg").write_text(icon_svg())
 
     prices = sorted(p["price"] for p in cat["products"])
-    C.share_card(SITE / "card.jpg", len(prices), prices[0], prices[-1])
+    if not chrome_card(SITE / "card.jpg", len(prices), prices[0], prices[-1]):
+        C.share_card(SITE / "card.jpg", len(prices), prices[0], prices[-1])
     (SITE / "index.html").write_text(page(shop, cat, g), encoding="utf-8")
     (SITE / "_headers").write_text("/*\n  X-Robots-Tag: notranslate\n")
     (SITE / ".nojekyll").write_text("")
