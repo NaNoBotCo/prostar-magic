@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.DS_Store
+# the shop's homepage copy and source pictures (read by tools/harvest.py)
+data/snapshot/
