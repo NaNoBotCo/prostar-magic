@@ -145,7 +145,7 @@ html.js .nojs{display:none}
 .p[hidden]{display:none}
 .p.on{border-color:var(--gold)}
 .p:target{box-shadow:0 0 0 4px var(--gold),var(--shadow)}
-.p-img{position:relative;aspect-ratio:1;background:#fff;display:grid;place-items:center;margin:26px 10px 0;border-radius:10px;
+.p-img{position:relative;aspect-ratio:1;background:#fff;display:grid;place-items:center;border-radius:10px;
  overflow:hidden;box-shadow:inset 0 0 0 1px #e7d9b8}
 .pip{position:absolute;left:11px;top:4px;font:600 1.05rem/1.2 var(--display);color:var(--ink)}
 .pip.red{color:var(--red)}
@@ -296,8 +296,8 @@ body.has-bar{padding-bottom:110px}
 @media (min-width:760px){.tools{position:sticky;top:57px}}
 .tw{transform-box:fill-box;transform-origin:center}
 @media (prefers-reduced-motion:no-preference){
- .tw{animation:tw 2.8s ease-in-out infinite}
- @keyframes tw{0%,100%{opacity:.25;scale:.55}50%{opacity:1;scale:1}}
+ .tw{animation:tw 4.2s ease-in-out infinite}
+ @keyframes tw{0%,100%{opacity:.18;scale:.6}50%{opacity:.75;scale:.95}}
  .bulbs .b1{animation:chase .9s steps(2) infinite}
  @keyframes chase{to{stroke-dashoffset:-32}}
  .m-pulse{animation:pulse 2.2s ease-out infinite}

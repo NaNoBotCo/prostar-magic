@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import art  # noqa: E402
+import magic  # noqa: E402
 import card as C  # noqa: E402
 import shopmap  # noqa: E402
 from common import ASSETS, DATA, GEO, SITE, jload  # noqa: E402
@@ -100,7 +101,7 @@ def product_card(i: int, p: dict, shelf_names: dict) -> str:
     return (f'<article class="p" id="p-{p["id"]}" data-id="{p["id"]}" data-i="{i}" data-p="{p["price"]}" '
             f'data-off="{off}" data-shelf="{p["shelf"]}" data-teach="{int(p["teach"])}" '
             f'data-k="{escape(key)}" data-name="{escape(p["name"])}" data-code="{escape(p["code"])}">'
-            f'{pip}<div class="p-img">{img}{teach}</div>'
+            f'{pip}{magic.flip(img + teach, p["blurb"], p["name"])}'
             f'<div class="p-body"><h3>{escape(p["name"])}</h3>'
             f'<p class="p-blurb">{escape(p["blurb"])}</p>'
             f'<p class="p-code">{escape(p["code"])}</p>'
@@ -194,10 +195,12 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <link rel="preload" href="assets/fonts/prompt-600-latin.woff2" as="font" type="font/woff2" crossorigin>
 {NOTRANSLATE_JS}
 <script>document.documentElement.classList.add('js')</script>
-<style>{CSS}</style>
+{magic.HEAD_JS}
+<style>{CSS}{magic.CSS}</style>
 <script type="application/ld+json">{jsonld(shop, g, products)}</script>
 </head>
 <body>
+{magic.sprite()}
 <a class="skip" href="#shop">ข้ามไปที่ร้าน</a>
 <header class="top">
   <a class="mark" href="#top" aria-label="Prostar Magic, top"><span class="star" aria-hidden="true">✦</span><span class="mark-t">PROSTAR</span><span class="mark-sub">MAGIC</span></a>
@@ -208,7 +211,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <main id="top">
 <section class="band hero" aria-label="Prostar Magic Shop">
   <span class="bg">{art.stage_svg()}</span>
-  <span class="scrim"></span><span class="sp"></span>
+  <span class="scrim"></span><span class="sp"></span>{magic.CURTAINS}
   <div class="tx">
     <p class="kicker">{bi("ถนนคชสาร ริมคูเมือง เชียงใหม่", "Kotchasarn Road, on the moat, Chiang Mai")}</p>
     <h1 class="marquee"><svg class="bulbs" aria-hidden="true"><rect class="b0" width="100%" height="100%" rx="14"/><rect class="b1" width="100%" height="100%" rx="14"/></svg><span class="m1">PROSTAR</span><span class="m2">MAGIC SHOP</span></h1>
@@ -240,6 +243,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     {price_strip(prices)}
     <p class="spread-l">{bi(f"ครึ่งหนึ่งไม่เกิน {baht(med)} · 9 ใน 10 ไม่เกิน {baht(p90)}", f"Half cost {baht(med)} or less; nine in ten, {baht(p90)} or less")}</p>
   </div>
+  {magic.hat_widget(bi)}
   <div class="tools needs-js">
     <div class="chips" role="group" aria-label="Shelves">{''.join(chips)}</div>
     <div class="row">
@@ -255,8 +259,10 @@ def page(shop: dict, cat: dict, g: dict) -> str:
   </div>
   <p class="nojs">{bi("สั่งทาง LINE: บอกรหัสสินค้า", "To order on LINE, send the item code.")}</p>
   <div id="grid" class="grid">{cards}</div>
-  <p id="none" class="none" hidden>{bi("ไม่พบ — ลองคำอื่น หรือถามทาง LINE", "Nothing found. Try another word, or ask on LINE.")}</p>
+  <p id="none" class="none" hidden>{magic.peek("peek-none")}{bi("ไม่พบ — ลองคำอื่น หรือถามทาง LINE", "Nothing found. Try another word, or ask on LINE.")}</p>
 </section>
+
+{magic.trick_section(bi, line_url)}
 
 <section id="shows" class="sec shows">
   <div class="shows-grid">
@@ -317,10 +323,10 @@ def page(shop: dict, cat: dict, g: dict) -> str:
   <a id="bar-send" class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>ส่งรายการทาง LINE</span><small lang="en">Copy list, open LINE</small></a>
 </div>
 
-<footer class="foot">
+<footer class="foot">{magic.peek("peek peek-foot")}
   <p class="f-name">Prostar Magic Shop · {escape(shop['name_th'])}</p>
   <p>{escape(shop['house_no'])} {escape(shop['street_th'])} เชียงใหม่ · <a href="{tel}">{shop['phone']}</a> · <a href="{line_url}" target="_blank" rel="noopener">LINE {shop['line_id']}</a> · <a href="{shop['facebook']}" target="_blank" rel="noopener">Facebook</a> · <a href="{shop['youtube']}" target="_blank" rel="noopener">YouTube</a></p>
-  <p class="credit">{bi("ภาพสินค้าและรายละเอียด: prostar-magic.com · แผนที่: © ผู้ร่วมพัฒนา OpenStreetMap (ODbL) · ภาพหน้าร้าน: motdang.net", "Product pictures and text: prostar-magic.com · Map: © OpenStreetMap contributors (ODbL) · Shop front: motdang.net")}</p>
+  <p class="credit">{bi("ภาพสินค้าและรายละเอียด: prostar-magic.com · แผนที่: © ผู้ร่วมพัฒนา OpenStreetMap (ODbL)", "Product pictures and text: prostar-magic.com · Map: © OpenStreetMap contributors (ODbL)")}</p>
   <p class="credit maker">เว็บไซต์ · <a href="https://hongdam.net/" target="_blank" rel="noopener">หงส์ดำ เชียงราย · <span lang="en">Hongdam, Chiang Rai</span></a> · <a href="{shop['repo']}" target="_blank" rel="noopener"><span lang="en">Source</span></a></p>
 </footer>
 <script>const HOURS={json.dumps(shop['hours'])};</script>
@@ -380,6 +386,7 @@ function now(){const d=new Date(Date.now()+7*36e5),day=(d.getUTCDay()+6)%7,m=d.g
  else{const t=HOURS[(day+1)%7][0];th='ปิดแล้ว · เปิดพรุ่งนี้ '+t;en='Closed · opens tomorrow '+t}
  $$('[data-now]').forEach(p=>{p.dataset.open=open;p.innerHTML='<b></b><span class="en" lang="en"></span>';p.querySelector('b').textContent=th;p.querySelector('.en').textContent=en})}
 now();setInterval(now,60000);
+""" + magic.JS + r"""
 })();
 """
 
