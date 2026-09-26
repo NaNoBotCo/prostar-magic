@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import random
 
+from magic import rabbit_g
+
 GOLD = "#f0c454"
 
 
@@ -15,12 +17,13 @@ def _sparkle(uid, x, y, s, delay, cls="tw"):
             f'transform="translate({x:.0f},{y:.0f}) scale({s:.2f})"/>')
 
 
-def _card(x, y, rot, rank, suit, red):
+def _card(x, y, rot, rank, suit, red, i=0, origin=(1240, 616)):
     col = "#c3142d" if red else "#1b1424"
-    return (f'<g transform="translate({x},{y}) rotate({rot})">'
+    anim = f'--dx:{origin[0] - x}px;--dy:{origin[1] - y}px;--d:{.9 + i * .18:.2f}s'
+    return (f'<g transform="translate({x},{y}) rotate({rot})"><g class="rise" style="{anim}">'
             f'<rect x="-36" y="-52" width="72" height="104" rx="9" fill="#fdf8ee" stroke="#d9c79c" stroke-width="2"/>'
             f'<text x="-26" y="-28" font-size="22" font-weight="700" fill="{col}" font-family="Georgia,serif">{rank}</text>'
-            f'<text x="0" y="16" font-size="40" text-anchor="middle" fill="{col}">{suit}</text></g>')
+            f'<text x="0" y="16" font-size="40" text-anchor="middle" fill="{col}">{suit}</text></g></g>')
 
 
 def stage_svg(uid: str = "s") -> str:
@@ -30,9 +33,9 @@ def stage_svg(uid: str = "s") -> str:
                     for _ in range(90))
     hx, fy = 1240, 800           # hat centre, stage floor
     # cards and sparkles rising out of the hat along an arc to the upper left
-    cards = "".join(_card(x, y, r, k, s, red) for x, y, r, k, s, red in (
+    cards = "".join(_card(x, y, r, k, s, red, i) for i, (x, y, r, k, s, red) in enumerate((
         (1190, 520, -12, "A", "♥", True), (1105, 405, -26, "K", "♠", False),
-        (1010, 300, -40, "Q", "♦", True), (905, 215, -55, "J", "♣", False)))
+        (1040, 300, -40, "Q", "♦", True), (975, 200, -55, "J", "♣", False))))
     sp = [(1265, 560, 1.4), (1150, 470, 1.0), (1215, 430, .7), (1060, 350, 1.2), (980, 400, .6),
           (960, 250, .9), (860, 170, 1.3), (1040, 200, .5), (820, 280, .7), (1320, 480, .8),
           (1290, 380, .5), (760, 150, .6), (1180, 300, .6), (700, 230, .9), (1400, 300, .7),
@@ -53,6 +56,7 @@ def stage_svg(uid: str = "s") -> str:
 <linearGradient id="{uid}shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
 <linearGradient id="{uid}gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbe39a"/><stop offset=".5" stop-color="#e2b04a"/><stop offset="1" stop-color="#9b6b1c"/></linearGradient>
 <linearGradient id="{uid}hat" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b0a10"/><stop offset=".45" stop-color="#2c2a36"/><stop offset=".6" stop-color="#15141b"/><stop offset="1" stop-color="#050408"/></linearGradient>
+<clipPath id="{uid}hatclip"><rect x="-200" y="0" width="400" height="{fy - 182}"/></clipPath>
 <path id="{uid}spk" d="M0,-12 C1.8,-1.8 1.8,-1.8 12,0 C1.8,1.8 1.8,1.8 0,12 C-1.8,1.8 -1.8,1.8 -12,0 C-1.8,-1.8 -1.8,-1.8 0,-12Z" fill="{GOLD}"/>
 </defs>
 <rect width="1600" height="900" fill="url(#{uid}bg)"/>
@@ -71,6 +75,8 @@ def stage_svg(uid: str = "s") -> str:
  <ellipse cx="0" cy="{fy - 182}" rx="150" ry="30" fill="#1a1820" stroke="#3a3744" stroke-width="2"/>
  <ellipse cx="0" cy="{fy - 184}" rx="96" ry="17" fill="#000"/>
  <ellipse cx="0" cy="{fy - 186}" rx="80" ry="11" fill="#ffd76a" opacity=".35"/>
+ <g clip-path="url(#{uid}hatclip)"><g class="bun"><g transform="translate(-72,{fy - 184 - 150}) scale(1.2)">{rabbit_g()}</g></g></g>
+ <path d="M-96,{fy - 184} A96,17 0 0 0 96,{fy - 184}" fill="none" stroke="#2c2a36" stroke-width="4"/>
 </g>
 <g transform="translate({hx + 190},{fy - 20}) rotate(-28)"><rect x="-7" y="-150" width="14" height="300" rx="4" fill="#0d0c12"/><rect x="-7" y="-150" width="14" height="40" rx="4" fill="#fdf8ee"/><rect x="-7" y="110" width="14" height="40" rx="4" fill="#fdf8ee"/></g>
 <path d="M0,0 H300 C280,260 230,430 170,560 C140,640 160,770 220,900 H0Z" fill="url(#{uid}velvet)"/>

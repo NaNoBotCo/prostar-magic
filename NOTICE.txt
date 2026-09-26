@@ -13,7 +13,7 @@ THE SHOP'S MATERIAL — product names, codes, prices, descriptions and pictures
 (docs/assets/photos/shows.jpg)
     From prostar-magic.com. They belong to Prostar Magic Shop; neither licence above covers them.
 
-DRAWINGS — the stage, the hat and cards, the Burn card (tools/art.py, inline in docs/index.html,
+DRAWINGS — the stage, the hat, cards and rabbit, the Burn card (tools/art.py, tools/magic.py, inline in docs/index.html,
 and docs/card.jpg)
     Drawn in code for this site. CC BY 4.0, as the page text above.
 
