@@ -32,8 +32,9 @@ SOURCES
       THAI NAME, HOUSE NUMBER (95/10), FACEBOOK, COORDINATES
           From: Overture Maps via the motdang.net listing, updated 2026-09-07
 
-      SHOP-FRONT PHOTO
-          From: motdang.net listing photo
+      STAGE, HAT, CARDS, BURN ART
+          From: drawn in code, tools/art.py; share card photographed from it
+              by headless Chrome
 
       STREETS, MOAT, WALL
           From: OpenStreetMap contributors (ODbL), via chiang-mai-roads and

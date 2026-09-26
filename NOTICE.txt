@@ -13,8 +13,9 @@ THE SHOP'S MATERIAL — product names, codes, prices, descriptions and pictures
 (docs/assets/photos/shows.jpg)
     From prostar-magic.com. They belong to Prostar Magic Shop; neither licence above covers them.
 
-SHOP-FRONT PHOTO — docs/assets/photos/storefront*.jpg
-    From motdang.net. CC BY 4.0.
+DRAWINGS — the stage, the hat and cards, the Burn card (tools/art.py, inline in docs/index.html,
+and docs/card.jpg)
+    Drawn in code for this site. CC BY 4.0, as the page text above.
 
 MAP DATA — data/geo/, and the map drawn in docs/index.html
     © OpenStreetMap contributors, ODbL 1.0 — https://www.openstreetmap.org/copyright
