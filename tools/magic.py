@@ -57,21 +57,21 @@ def hat_widget(bi) -> str:
 </div>'''
 
 
-def trick_section(bi, line_url: str) -> str:
+def trick_section(bi, tel: str, phone: str) -> str:
     return f'''<section id="trick" class="sec trick needs-js">
   <div class="sec-h"><h2>{bi("ลองกลนี้", "Try a trick", "small")}</h2>
     <p id="trick-say" class="trick-say" aria-live="polite"></p></div>
   <div class="felt">{peek("peek peek-felt")}<div id="trick-cards" class="pcs" aria-live="polite"></div></div>
   <p class="ctas"><button id="trick-go" class="btn btn-gold" type="button"><span>จำได้แล้ว</span><small lang="en">Got it</small></button></p>
   <div id="trick-end" class="trick-end" hidden>
-    <p>{bi("อยากเล่นกลแบบนี้เป็น? ทักโจนาธานทาง LINE", "Want to do tricks like this? Ask Jonathan on LINE.")}</p>
-    <a class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>LINE</span><small lang="en">jonathan2512</small></a>
+    <p>{bi("อยากเล่นกลแบบนี้เป็น? ถามโจนาธานที่ร้าน", "Want to do tricks like this? Ask Jonathan at the shop.")}</p>
+    <a class="btn btn-gold" href="{tel}"><span>โทร</span><small>{phone}</small></a>
   </div>
 </section>'''
 
 
 def flip(img_html: str, blurb: str, name: str) -> str:
-    back = escape(blurb) + "…" if blurb else "ถามรายละเอียดทาง LINE · <span lang=\"en\">Ask on LINE</span>"
+    back = escape(blurb) + "…" if blurb else "ถามรายละเอียดที่ร้าน · <span lang=\"en\">Ask at the shop</span>"
     return (f'<button class="p-flip" type="button" aria-pressed="false" '
             f'aria-label="พลิกดูว่ากลนี้ทำอะไร · Flip: what {escape(name)} does">'
             f'<span class="p-img">{img_html}<span class="flip-hint" aria-hidden="true">↻</span></span>'

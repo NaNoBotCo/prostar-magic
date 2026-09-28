@@ -112,9 +112,11 @@ def product_card(i: int, p: dict, shelf_names: dict) -> str:
 def jsonld(shop: dict, g: dict, products: list) -> str:
     offers = [{"@type": "Offer", "name": p["name"], "sku": p["code"], "price": p["price"],
                "priceCurrency": "THB"} for p in products]
-    d = {"@context": "https://schema.org", "@type": "Store", "name": shop["name"],
-         "alternateName": shop["name_th"], "url": shop["base_url"],
-         "image": shop["base_url"] + "card.jpg", "telephone": shop["phone_intl"],
+    # A fan site: the page is ours, the shop is its subject. The Store carries
+    # no url, because this address is not the shop's website.
+    store = {"@type": "Store", "name": shop["name"],
+         "alternateName": shop["name_th"],
+         "telephone": shop["phone_intl"],
          "address": {"@type": "PostalAddress",
                      "streetAddress": f'{shop["house_no"]} {shop["street_en"]}',
                      "addressLocality": "Chang Khlan, Mueang Chiang Mai", "postalCode": shop["postcode"],
@@ -126,6 +128,9 @@ def jsonld(shop: dict, g: dict, products: list) -> str:
          "sameAs": [shop["facebook"], shop["youtube"]],
          "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Magic props",
                              "itemListElement": offers}}
+    d = {"@context": "https://schema.org", "@type": "WebPage",
+         "name": "Prostar Magic Shop — a fan site", "url": shop["base_url"],
+         "image": shop["base_url"] + "card.jpg", "about": store}
     return json.dumps(d, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
 
@@ -141,15 +146,15 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     shelf_names = {k: f"{th} {en}" for k, th, en in SHELVES}
     by_code = {p["code"]: p for p in products}
     own = by_code.get(shop["own_trick"])
-    line_url = f'https://line.me/ti/p/~{shop["line_id"]}'
     tel = f'tel:{shop["phone_intl"]}'
     lat, lon = g["shop"]
     osm = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=18/{lat}/{lon}"
     gmaps = f"https://www.google.com/maps/dir/?api=1&destination={lat},{lon}"
     snap_th, snap_en = th_date(cat["snapshot"]), en_date(cat["snapshot"])
-    title = "Prostar Magic Shop · โปรสตาร์ แมจิก ช้อป · ร้านมายากล เชียงใหม่"
+    title = "Prostar Magic Shop · โปรสตาร์ แมจิก ช้อป · ร้านมายากล เชียงใหม่ · เว็บแฟนคลับ"
     desc = (f"ร้านมายากล ถนนคชสาร เชียงใหม่ — อุปกรณ์มายากล {n} ชิ้น ราคา {baht(lo)}–{baht(hi)}, "
-            f"โชว์มายากล และสอนมายากล · Magic shop on the Chiang Mai moat: props, shows, lessons.")
+            f"โชว์มายากล และสอนมายากล · เว็บแฟนคลับ ไม่ใช่เว็บของร้าน · "
+            f"A fan site for the magic shop on the Chiang Mai moat: props, shows, lessons.")
 
     chips = [f'<button class="chip" type="button" data-shelf="all" aria-pressed="true">'
              f'{bi("ทั้งหมด", "All")} <b>{n}</b></button>']
@@ -181,7 +186,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <meta name="theme-color" content="#120d1c">
 <link rel="canonical" href="{shop['base_url']}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Prostar Magic Shop · โปรสตาร์ แมจิก ช้อป">
+<meta property="og:title" content="Prostar Magic Shop · โปรสตาร์ แมจิก ช้อป · เว็บแฟนคลับ · fan site">
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:url" content="{shop['base_url']}">
 <meta property="og:image" content="{shop['base_url']}card.jpg">
@@ -205,7 +210,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <header class="top">
   <a class="mark" href="#top" aria-label="Prostar Magic, top"><span class="star" aria-hidden="true">✦</span><span class="mark-t">PROSTAR</span><span class="mark-sub">MAGIC</span></a>
   <nav aria-label="Sections"><a href="#shop">ร้าน</a><a href="#shows">โชว์</a><a href="#learn">เรียน</a><a href="#visit">แผนที่</a></nav>
-  <a class="pill line" href="{line_url}" target="_blank" rel="noopener">LINE</a>
+  <span class="pill fan">แฟนคลับ · <span lang="en">Fan site</span></span>
 </header>
 
 <main id="top">
@@ -217,9 +222,9 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     <h1 class="marquee"><svg class="bulbs" aria-hidden="true"><rect class="b0" width="100%" height="100%" rx="14"/><rect class="b1" width="100%" height="100%" rx="14"/></svg><span class="m1">PROSTAR</span><span class="m2">MAGIC SHOP</span></h1>
     <p class="thname">{escape(shop['name_th'])}</p>
     <p class="lede">{bi("อุปกรณ์มายากล โชว์ และสอนมายากล", "Magic props, shows and lessons")}</p>
+    <p class="fan-note">{bi("เว็บแฟนคลับ ทำโดยแฟน ไม่ใช่เว็บของร้าน", "A fan site, made by a fan. Not the shop's own.")}</p>
     <p class="now needs-js" data-now aria-live="polite"></p>
     <p class="ctas">
-      <a class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>แอด LINE</span><small lang="en">{shop['line_id']}</small></a>
       <a class="btn btn-gold" href="{tel}"><span>โทร</span><small>{shop['phone']}</small></a>
       <a class="btn btn-ghost" href="#visit"><span>แผนที่</span><small lang="en">Map</small></a>
     </p>
@@ -236,7 +241,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <section id="shop" class="sec shop">
   <div class="sec-h">
     <h2>{bi("ร้าน", "Shop", "small")}</h2>
-    <p>{bi("เลือกของ ใส่รายการ แล้วส่งทาง LINE — ส่งตรงถึงบ้านท่าน", "Pick, add to your list, send it on LINE.")}</p>
+    <p>{bi("เลือกของ ใส่รายการ แล้วถือรายการไปที่ร้าน", "Pick, add to your list, take it to the shop.")}</p>
     <p class="note">{bi(f"ราคาจากเว็บร้าน ณ {snap_th}", f"Prices from the shop's web store, {snap_en}")}</p>
   </div>
   <div class="spread">
@@ -257,12 +262,12 @@ def page(shop: dict, cat: dict, g: dict) -> str:
       <p class="shown"><b id="count">{n}</b> ชิ้น</p>
     </div>
   </div>
-  <p class="nojs">{bi("สั่งทาง LINE: บอกรหัสสินค้า", "To order on LINE, send the item code.")}</p>
+  <p class="nojs">{bi("จดรหัสสินค้าไว้ แล้วไปถามที่ร้าน", "Note the item code and ask at the shop.")}</p>
   <div id="grid" class="grid">{cards}</div>
-  <p id="none" class="none" hidden>{magic.peek("peek-none")}{bi("ไม่พบ — ลองคำอื่น หรือถามทาง LINE", "Nothing found. Try another word, or ask on LINE.")}</p>
+  <p id="none" class="none" hidden>{magic.peek("peek-none")}{bi("ไม่พบ — ลองคำอื่น หรือถามที่ร้าน", "Nothing found. Try another word, or ask at the shop.")}</p>
 </section>
 
-{magic.trick_section(bi, line_url)}
+{magic.trick_section(bi, tel, shop['phone'])}
 
 <section id="shows" class="sec shows">
   <div class="shows-grid">
@@ -272,8 +277,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     <p class="perf" lang="en">{escape(shop['performer'])}</p>
     <p>{bi("มายากลเวทีและระยะใกล้ สำหรับงานบริษัท โรงเรียน และงานเลี้ยง", "Stage and close-up magic for company events, schools and parties.")}</p>
   </div>
-  <p class="ctas"><a class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>ถามคิวและราคาทาง LINE</span><small lang="en">Ask for a date and price</small></a>
-  <a class="btn btn-gold" href="{tel}"><span>โทร</span><small>{shop['phone']}</small></a></p>
+  <p class="ctas"><a class="btn btn-gold" href="{tel}"><span>โทรถามคิวและราคา</span><small>{shop['phone']}</small></a></p>
   </div>
   <figure class="polaroid"><img src="assets/photos/shows.jpg" width="1000" height="300" loading="lazy" decoding="async"
     alt="Jonathan performing: card magic, stage shows with an assistant, the Thailand's Got Talent set, a company event stage">
@@ -285,8 +289,8 @@ def page(shop: dict, cat: dict, g: dict) -> str:
   <div class="sec-h"><h2>{bi("เรียนมายากล", "Lessons", "small")}</h2></div>
   <div class="tiles">
     <div class="tile"><h3>{escape(shop['course_note'])}</h3>
-      <p>{bi("ถามรอบเรียนทาง LINE", "Ask on LINE for the next class.")}</p>
-      <a class="btn btn-line sm" href="{line_url}" target="_blank" rel="noopener"><span>LINE</span><small lang="en">{shop['line_id']}</small></a></div>
+      <p>{bi("ถามรอบเรียนที่ร้าน", "Ask at the shop for the next class.")}</p>
+      <a class="btn btn-gold sm" href="{tel}"><span>โทร</span><small>{shop['phone']}</small></a></div>
     <div class="tile"><h3><b class="big">{n_teach}</b> {escape("ชิ้นมีคลิปหรือแผ่นสอนการแสดง")}</h3>
       <p class="en" lang="en">{n_teach} props come with a how-to clip or sheet.</p>
       <a class="btn btn-ghost-dark sm show-teach" href="#shop" data-shelf="teach"><span>ดู</span><small lang="en">See them</small></a></div>
@@ -320,13 +324,14 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     <label class="msg"><span>ข้อความที่จะส่ง · <i lang="en">Message</i></span><textarea id="bar-msg" rows="5" readonly></textarea></label>
     <button id="bar-clear" class="linkish" type="button">ล้างรายการ · <span lang="en">Clear</span></button>
   </details>
-  <a id="bar-send" class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>ส่งรายการทาง LINE</span><small lang="en">Copy list, open LINE</small></a>
+  <button id="bar-send" class="btn btn-gold" type="button"><span>คัดลอกรายการ</span><small lang="en">Copy the list</small></button>
 </div>
 
 <footer class="foot">{magic.peek("peek peek-foot")}
   <p class="f-name">Prostar Magic Shop · {escape(shop['name_th'])}</p>
-  <p>{escape(shop['house_no'])} {escape(shop['street_th'])} เชียงใหม่ · <a href="{tel}">{shop['phone']}</a> · <a href="{line_url}" target="_blank" rel="noopener">LINE {shop['line_id']}</a> · <a href="{shop['facebook']}" target="_blank" rel="noopener">Facebook</a> · <a href="{shop['youtube']}" target="_blank" rel="noopener">YouTube</a></p>
+  <p>{escape(shop['house_no'])} {escape(shop['street_th'])} เชียงใหม่ · <a href="{tel}">{shop['phone']}</a> · <a href="{shop['facebook']}" target="_blank" rel="noopener">Facebook</a> · <a href="{shop['youtube']}" target="_blank" rel="noopener">YouTube</a></p>
   <p class="credit">{bi("ภาพสินค้าและรายละเอียด: prostar-magic.com · แผนที่: © ผู้ร่วมพัฒนา OpenStreetMap (ODbL)", "Product pictures and text: prostar-magic.com · Map: © OpenStreetMap contributors (ODbL)")}</p>
+  <p class="credit fan">{bi("เว็บแฟนคลับ ทำโดยแฟน ร้านไม่ได้เป็นผู้ทำหรือดูแลเว็บนี้", "A fan site, made by a fan. The shop does not make or run this page.")}</p>
   <p class="credit maker">เว็บไซต์ · <a href="https://hongdam.net/" target="_blank" rel="noopener">หงส์ดำ เชียงราย · <span lang="en">Hongdam, Chiang Rai</span></a> · <a href="{shop['repo']}" target="_blank" rel="noopener"><span lang="en">Source</span></a></p>
 </footer>
 <script>const HOURS={json.dumps(shop['hours'])};</script>
@@ -352,7 +357,7 @@ function setShelf(k){shelf=k;chips.forEach(x=>x.setAttribute('aria-pressed',Stri
 function order(){const k=sort.value,a=[...cards];
  a.sort((x,y)=>k==='up'?x.dataset.p-y.dataset.p:k==='down'?y.dataset.p-x.dataset.p:k==='off'?(y.dataset.off-x.dataset.off)||(x.dataset.p-y.dataset.p):x.dataset.i-y.dataset.i);
  a.forEach(c=>grid.appendChild(c))}
-function message(items,tot){return 'สวัสดี สนใจสั่งของจากเว็บไซต์ Prostar Magic\n'+items.map(c=>'• '+c.dataset.code+' '+c.dataset.name+' ฿'+fmt(+c.dataset.p)).join('\n')+'\nรวม ฿'+fmt(tot)+' ('+items.length+' ชิ้น)'}
+function message(items,tot){return 'รายการของจาก Prostar Magic Shop\n'+items.map(c=>'• '+c.dataset.code+' '+c.dataset.name+' ฿'+fmt(+c.dataset.p)).join('\n')+'\nรวม ฿'+fmt(tot)+' ('+items.length+' ชิ้น)'}
 function render(){const items=cards.filter(c=>list[c.dataset.id]).sort((a,b)=>a.dataset.i-b.dataset.i);
  Object.keys(list).forEach(id=>{if(!document.getElementById('p-'+id))delete list[id]});
  const tot=items.reduce((s,c)=>s+(+c.dataset.p),0);
@@ -369,11 +374,11 @@ chips.forEach(ch=>ch.addEventListener('click',()=>setShelf(ch.dataset.shelf)));
 $$('.show-teach').forEach(a=>a.addEventListener('click',()=>{q.value='';setShelf('teach')}));
 q.addEventListener('input',apply);sort.addEventListener('change',order);
 $('#bar-clear').addEventListener('click',()=>{list={};save();render()});
-send.addEventListener('click',async e=>{const t=$('#bar-msg').value;if(!t)return;const lab=send.querySelector('span');
+send.addEventListener('click',async()=>{const t=$('#bar-msg').value;if(!t)return;const lab=send.querySelector('span');
  let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(err){const m=$('#bar-msg');m.focus();m.select();try{ok=document.execCommand('copy')}catch(e2){}}
- lab.textContent=ok?'คัดลอกแล้ว — วางในแชท LINE':'เปิดรายการ แล้วคัดลอกข้อความ';
- if(!ok){e.preventDefault();$('.bar-list').open=true}
- setTimeout(()=>{lab.textContent='ส่งรายการทาง LINE'},7000)});
+ lab.textContent=ok?'คัดลอกแล้ว':'เปิดรายการ แล้วคัดลอกข้อความ';
+ if(!ok){$('.bar-list').open=true}
+ setTimeout(()=>{lab.textContent='คัดลอกรายการ'},7000)});
 function fromHash(){const h=location.hash;if(h.startsWith('#p-')){const c=document.querySelector(h);if(c&&c.hidden){q.value='';setShelf('all')}}}
 window.addEventListener('hashchange',fromHash);fromHash();render();
 // open now, by the clock in Chiang Mai (UTC+7, no daylight saving)

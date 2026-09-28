@@ -3,10 +3,14 @@ PROSTAR-MAGIC
 ==============================================================================
 
 
-A one-page site for Prostar Magic Shop (โปรสตาร์ แมจิก ช้อป), 95/10 Kotchasarn
-Road, Chiang Mai: the shop's 83 props with prices, a list that goes to the
-shop on LINE, shows, lessons, opening hours with an open-now line, and a
-street map with the walk from Tha Phae Gate. Thai first, English under it.
+A one-page FAN SITE for Prostar Magic Shop (โปรสตาร์ แมจิก ช้อป), 95/10
+Kotchasarn Road, Chiang Mai — made by a fan, not by or for the shop. The
+shop's 83 props with prices, a list you can copy and take to the shop, shows,
+lessons, opening hours with an open-now line, and a street map with the walk
+from Tha Phae Gate. Thai first, English under it.
+
+No LINE id anywhere: Nan, 2026-09-28, doubts the one on the shop's old
+homepage. Contact on the page is the phone, Facebook and the shop itself.
 
 Live: https://nanobotco.github.io/prostar-magic/ (GitHub Pages, main /docs)
 
@@ -25,7 +29,7 @@ SOURCES
 ------------------------------------------------------------------------------
 
 
-      Products, prices, codes, pictures, phone, LINE, YouTube, show banner
+      Products, prices, codes, pictures, phone, YouTube, show banner
           From: prostar-magic.com homepage, a frozen copy stamped 2024-06-18
               (data/snapshot/)
 
@@ -56,7 +60,7 @@ LEFT OPEN
 ------------------------------------------------------------------------------
 
 
-  -  Show prices: not on this disk. The page says to ask on LINE.
+  -  Show prices: not on this disk. The page says to ask at the shop.
   -  57 DVD and instruction-video rows on the old store are left off (left_out
      in data/products.json).
   -  data/snapshot/ (the shop's homepage copy) is in .gitignore;
