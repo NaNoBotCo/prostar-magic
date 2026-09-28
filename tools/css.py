@@ -49,7 +49,8 @@ html.js .nojs{display:none}
 .top nav a{text-decoration:none;padding:6px 10px;border-radius:999px;font-size:.98rem;white-space:nowrap}
 .top nav a:hover{background:rgba(255,255,255,.1)}
 .pill{padding:7px 14px;border-radius:999px;text-decoration:none;font:600 .92rem/1 var(--body)}
-.pill.line{background:var(--line-btn);color:#fff}
+.pill.fan{background:var(--line-btn);color:#fff}
+.fan-note{font:600 .9rem/1.3 var(--body);opacity:.85;margin:.2rem 0 .6rem}
 @media (max-width:560px){.mark-sub{display:none}.top{gap:4px;padding:8px 10px}.top nav a{padding:6px 6px;font-size:.92rem}.mark{font-size:.92rem;letter-spacing:.08em}}
 @media (max-width:420px){.mark-t{display:none}.pill{padding:7px 11px}}
 
