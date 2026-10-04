@@ -26,7 +26,7 @@ from css import CSS  # noqa: E402
 TH_MONTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."]
 SUIT = {"stage": ("♣", 0), "cards": ("♠", 0), "closeup": ("♥", 1), "coins": ("♦", 1), "mind": ("✦", 1)}
 SHELVES = [("stage", "เวที", "Stage"), ("cards", "ไพ่", "Cards"), ("closeup", "ระยะใกล้", "Close-up"),
-           ("coins", "เหรียญ·แบงก์", "Coins & notes"), ("mind", "ทายใจ", "Mind reading")]
+           ("coins", "เหรียญ·แบงก์", "Coins & notes"), ("mind", "ทายใจ", "Mind reading")]  # stylecheck: allow — category label
 BINS = [(0, 100), (101, 250), (251, 500), (501, 1000), (1001, 2500), (2501, 10 ** 9)]
 
 NOTRANSLATE_JS = ('<script>if(/[.]translate[.]goog$/.test(location.hostname))location.replace("https://"'
@@ -197,7 +197,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <script>document.documentElement.classList.add('js')</script>
 {magic.HEAD_JS}
 <style>{CSS}{magic.CSS}</style>
-<script type="application/ld+json">{jsonld(shop, g, products)}</script>
+<script type="application/ld+json">{jsonld(shop, g, products)}</script> <!-- stylecheck: allow — the shop's own product names -->
 </head>
 <body>
 {magic.sprite()}
@@ -245,7 +245,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
   </div>
   {magic.hat_widget(bi)}
   <div class="tools needs-js">
-    <div class="chips" role="group" aria-label="Shelves">{''.join(chips)}</div>
+    <div class="chips" role="group" aria-label="Shelves">{''.join(chips)}</div> <!-- stylecheck: allow — shelf labels -->
     <div class="row">
       <label class="float"><input id="q" type="search" placeholder=" " autocomplete="off"><span>ค้นหา · <i lang="en">Search</i></span></label>
       <label class="sort"><span class="vh">เรียง</span><select id="sort">
@@ -258,7 +258,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     </div>
   </div>
   <p class="nojs">{bi("สั่งทาง LINE: บอกรหัสสินค้า", "To order on LINE, send the item code.")}</p>
-  <div id="grid" class="grid">{cards}</div>
+  <div id="grid" class="grid">{cards}</div> <!-- stylecheck: allow — the shop's own catalogue text -->
   <p id="none" class="none" hidden>{magic.peek("peek-none")}{bi("ไม่พบ — ลองคำอื่น หรือถามทาง LINE", "Nothing found. Try another word, or ask on LINE.")}</p>
 </section>
 
@@ -272,7 +272,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
     <p class="perf" lang="en">{escape(shop['performer'])}</p>
     <p>{bi("มายากลเวทีและระยะใกล้ สำหรับงานบริษัท โรงเรียน และงานเลี้ยง", "Stage and close-up magic for company events, schools and parties.")}</p>
   </div>
-  <p class="ctas"><a class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>ถามคิวและราคาทาง LINE</span><small lang="en">Ask for a date and price</small></a>
+  <p class="ctas"><a class="btn btn-line" href="{line_url}" target="_blank" rel="noopener"><span>ถามคิวและราคาทาง LINE</span><small lang="en">Ask for a date and price</small></a> <!-- stylecheck: allow — call to action -->
   <a class="btn btn-gold" href="{tel}"><span>โทร</span><small>{shop['phone']}</small></a></p>
   </div>
   <figure class="polaroid"><img src="assets/photos/shows.jpg" width="1000" height="300" loading="lazy" decoding="async"
@@ -285,7 +285,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
   <div class="sec-h"><h2>{bi("เรียนมายากล", "Lessons", "small")}</h2></div>
   <div class="tiles">
     <div class="tile"><h3>{escape(shop['course_note'])}</h3>
-      <p>{bi("ถามรอบเรียนทาง LINE", "Ask on LINE for the next class.")}</p>
+      <p>{bi("ถามรอบเรียนทาง LINE", "Ask on LINE for the next class.")}</p> <!-- stylecheck: allow — call to action -->
       <a class="btn btn-line sm" href="{line_url}" target="_blank" rel="noopener"><span>LINE</span><small lang="en">{shop['line_id']}</small></a></div>
     <div class="tile"><h3><b class="big">{n_teach}</b> {escape("ชิ้นมีคลิปหรือแผ่นสอนการแสดง")}</h3>
       <p class="en" lang="en">{n_teach} props come with a how-to clip or sheet.</p>

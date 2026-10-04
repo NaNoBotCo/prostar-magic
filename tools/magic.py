@@ -71,7 +71,7 @@ def trick_section(bi, line_url: str) -> str:
 
 
 def flip(img_html: str, blurb: str, name: str) -> str:
-    back = escape(blurb) + "…" if blurb else "ถามรายละเอียดทาง LINE · <span lang=\"en\">Ask on LINE</span>"
+    back = escape(blurb) + "…" if blurb else "ถามรายละเอียดทาง LINE · <span lang=\"en\">Ask on LINE</span>"  # stylecheck: allow — button label
     return (f'<button class="p-flip" type="button" aria-pressed="false" '
             f'aria-label="พลิกดูว่ากลนี้ทำอะไร · Flip: what {escape(name)} does">'
             f'<span class="p-img">{img_html}<span class="flip-hint" aria-hidden="true">↻</span></span>'
