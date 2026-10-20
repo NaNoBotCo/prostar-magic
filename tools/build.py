@@ -187,6 +187,7 @@ def page(shop: dict, cat: dict, g: dict) -> str:
 <meta property="og:image" content="{shop['base_url']}card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Card: Prostar Magic Shop, a top hat with a rabbit and a fan of playing cards in a spotlight, 83 tricks from B30 to B18,000">
 <meta property="og:locale" content="th_TH">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
